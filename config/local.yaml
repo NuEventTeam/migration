@@ -1,8 +1,8 @@
 databases:
-  - host: "localhost"
+  - name: "auth"
+    host: "auth-db"
     user: "auth"
     password: "auth"
-    name: "auth"
     port: 5432
     file: "./auth"
 
