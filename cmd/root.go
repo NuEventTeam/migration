@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
-var AppConfig Config
+var AppConfig *Config
 
 type Config struct {
 	Database []Database `yaml:"databases"`
@@ -22,18 +24,34 @@ type Database struct {
 
 var rootCmd = &cobra.Command{
 	Use:   "app",
-	Short: "billing application",
+	Short: "migrations application",
 }
 
 func Execute() {
-	//TODO load config
 
+	LoadConf()
 	err := rootCmd.Execute()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
+func LoadConf() {
+	path := "./config/local.yaml"
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		panic("config file does not exists: " + path)
+	}
+
+	var cfg Config
+	if err := cleanenv.ReadConfig(path, &cfg); err != nil {
+		panic(err)
+	}
+
+	AppConfig = &cfg
+}
+
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
 }

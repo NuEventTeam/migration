@@ -1,5 +1,5 @@
-database:
-  - host: "postgres-auth"
+databases:
+  - host: "localhost"
     user: "auth"
     password: "auth"
     name: "auth"

@@ -7,8 +7,9 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 	"github.com/spf13/cobra"
-
 	"log"
 )
 
@@ -21,18 +22,18 @@ var migrateCmd = &cobra.Command{
 		Usage example migrate COMMAND [args...]
 	
 	Commands:
-  	up 		-db [DBNAME] 		Apply all up migrations to all db's or one
-  	down 	-db [DBNAME] N  	Apply N down migrations
-  	drop 	-db [DBNAME]		Drop everything inside database
-  	force 	-db [DBNAME] -v [N] Set version V but don't run migration (ignores dirty state)
-  	version -db [DBNAME] 		Print current migration version`,
+  	up 		-d [DBNAME] 		Apply all up migrations to all db's or one
+  	down 	-d [DBNAME] N  		Apply N down migrations
+  	drop 	-d [DBNAME]			Drop everything inside database
+  	force 	-d [DBNAME] -v [N] 	Set version V but don't run migration (ignores dirty state)
+  	version -d [DBNAME] 		Print current migration version`,
 	Args: cobra.ExactArgs(1),
 	Run:  migrateDatabase,
 }
 
 func init() {
 	migrateCmd.Flags().IntVarP(&version, "version", "v", 0, "Version of migration")
-	migrateCmd.Flags().StringVarP(&dbname, "dbname", "db", "", "DB to migrate")
+	migrateCmd.Flags().StringVarP(&dbname, "dbname", "d", "", "DB to migrate")
 	rootCmd.AddCommand(migrateCmd)
 }
 
@@ -58,17 +59,20 @@ func getDBConn(cfg Config) map[string]*sql.DB {
 
 func migrateDatabase(cmd *cobra.Command, args []string) {
 
-	dbs := getDBConn(AppConfig)
+	dbs := getDBConn(*AppConfig)
 
 	switch args[0] {
-
 	case "up":
 		Up(dbname, dbs)
 	case "down":
 		Down(dbname, version, dbs)
 	case "force":
+		if dbname == "" {
+			log.Println("please specify the db name")
+			return
+		}
 		if version == 0 {
-			log.Println("Please specify the version")
+			log.Println("please specify the version")
 			return
 		}
 		m, err := NewMigrator(dbs[dbname], dbname)
@@ -82,8 +86,28 @@ func migrateDatabase(cmd *cobra.Command, args []string) {
 			return
 		}
 		log.Printf("force migration finished \n")
+	case "drop":
+		if dbname == "" {
+			log.Println("please specify the db name")
+			return
+		}
 
+		m, err := NewMigrator(dbs[dbname], dbname)
+		if err != nil {
+			log.Printf("Could not create instance of migrator: %s\n", err.Error())
+			return
+		}
+		err = m.Drop()
+		if err != nil {
+			log.Printf("force migration error: %s\n", err)
+			return
+		}
+		log.Printf("force migration finished \n")
 	case "version":
+		if dbname == "" {
+			log.Println("please specify the db name")
+			return
+		}
 		m, err := NewMigrator(dbs[dbname], dbname)
 		if err != nil {
 			log.Printf("Could not create instance of migrator: %s\n", err.Error())
