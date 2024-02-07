@@ -5,4 +5,9 @@ databases:
     password: "auth"
     port: 5432
     file: "./auth"
+  - name: "event"
+    host: "event-db"
+    user: "event"
+    password: "event"
+    port: 5432
 

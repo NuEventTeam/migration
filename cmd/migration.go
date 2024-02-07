@@ -41,7 +41,7 @@ func getDBConn(cfg Config) map[string]*sql.DB {
 	dbs := map[string]*sql.DB{}
 	for _, val := range cfg.Database {
 		dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", val.Host, val.Port, val.User, val.Password, val.Name)
-
+		log.Println(dsn)
 		// Open connection to the database
 		db, err := sql.Open("postgres", dsn)
 		if err != nil {
@@ -52,7 +52,7 @@ func getDBConn(cfg Config) map[string]*sql.DB {
 			log.Printf("cannot connect to %s \n error: $v", dsn, err)
 		}
 
-		dbs[val.File] = db
+		dbs[val.Name] = db
 	}
 	return dbs
 }
@@ -125,6 +125,7 @@ func NewMigrator(conn *sql.DB, dbname string) (*migrate.Migrate, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(dbname)
 	return migrate.NewWithDatabaseInstance(
 		fmt.Sprintf("file://%s", dbname),
 		dbname,
@@ -146,8 +147,8 @@ func Up(dbname string, dbs map[string]*sql.DB) {
 		log.Printf("up migration finished.\n")
 		return
 	}
-	for key, val := range dbs {
-		m, err := NewMigrator(val, key)
+	for key := range dbs {
+		m, err := NewMigrator(dbs[key], key)
 		if err != nil {
 			log.Printf("Could not create instance of migrator: %s\n", err.Error())
 			return
