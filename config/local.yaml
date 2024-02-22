@@ -10,8 +10,3 @@ databases:
     user: "event"
     password: "event"
     port: 5432
-  - name: "user"
-    host: "user-db"
-    user: "user"
-    password: "user"
-    port: 5432
