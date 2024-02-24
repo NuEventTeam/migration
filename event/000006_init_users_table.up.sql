@@ -7,6 +7,11 @@ CREATE TABLE users (
        lastname  varchar(15),
        birthdate date not null,
        profile_image varchar(50),
+    follower_count bigint not null default 0,
        created_at TIMESTAMP DEFAULT now(),
        deleted_at TIMESTAMP
 );
+
+
+CREATE INDEX user_index
+    ON users (user_id);
