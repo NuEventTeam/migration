@@ -5,6 +5,7 @@ create table if not exists event_locations (
     longitude numeric(20,12) not null,
     latitude numeric(20,12) not null,
     seats integer,
+    attendees_count bigint not null default 0,
     starts_at timestamp not null,
     ends_at timestamp not null,
     created_at timestamp not null default now(),
