@@ -4,4 +4,9 @@ create table if not exists event_permissions(
     created_at timestamp not null default now(),
     updated_at timestamp not null default now(),
     deleted_at timestamp
-)
+);
+
+INSERT INTO event_permissions (name) VALUES
+('read'),
+('update'),
+('verify');

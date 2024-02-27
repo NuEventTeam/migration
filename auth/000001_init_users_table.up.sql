@@ -7,3 +7,4 @@ CREATE TABLE if not exists users (
     deleted_at timestamp
     );
 
+CREATE INDEX user_phone_index ON users(phone);
