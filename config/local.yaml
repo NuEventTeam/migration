@@ -9,4 +9,4 @@ databases:
     host: "event-db"
     user: "event"
     password: "event"
-    port: 5433
+    port: 5432
