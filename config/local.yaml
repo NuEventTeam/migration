@@ -1,12 +1,12 @@
 databases:
   - name: "auth"
-    host: "auth-db"
+    host: "localhost"
     user: "auth"
     password: "auth"
     port: 5432
     file: "./auth"
   - name: "event"
-    host: "event-db"
+    host: "localhost"
     user: "event"
     password: "event"
-    port: 5432
+    port: 5433
