@@ -5,6 +5,7 @@ create table if  not exists tokens(
     user_id bigint ,
     token_type smallint not null,
     created_at timestamp not null default now(),
+     user_agent varchar(255),
     expires_at timestamp not null
 );
 
