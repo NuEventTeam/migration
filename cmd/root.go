@@ -37,7 +37,7 @@ func Execute() {
 }
 
 func LoadConf() {
-	path := "./config/prod.yaml"
+	path := "./config/local.yaml"
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		panic("config file does not exists: " + path)

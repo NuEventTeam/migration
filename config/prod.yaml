@@ -1,6 +1,6 @@
 databases:
   - name: "event"
-    host: "localhost"
+    host: "event-db"
     user: "event"
     password: "event"
     port: 5432
