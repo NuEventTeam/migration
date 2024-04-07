@@ -1,1 +1,1 @@
-alter table events add column price bigint unsigned;
+alter table events add column price  bigint ;
