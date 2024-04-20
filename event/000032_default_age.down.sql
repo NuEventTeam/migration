@@ -1,0 +1,2 @@
+ALTER TABLE events
+    ALTER  SET DEFAULT 0;
